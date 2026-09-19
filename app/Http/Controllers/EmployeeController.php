@@ -99,9 +99,16 @@ class EmployeeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Employee $employee)
     {
-        //
+        $employee->load([
+            'user',
+            'department',
+            'designation',
+            'leaves'
+        ]);
+
+        return view('employees.show', compact('employee'));
     }
 
     /**
