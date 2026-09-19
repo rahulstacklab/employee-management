@@ -49,6 +49,21 @@
 <div class="container">
 
     <h1>Employee Management</h1>
+    @if(session('success'))
+        <div style="
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        ">
+            {{ session('success') }}
+        </div>
+    @endif
+    
+    <a href="{{ route('employees.create') }}">
+        Add Employee
+    </a>
 
     <table>
 
@@ -62,6 +77,7 @@
                 <th>Designation</th>
                 <th>Salary</th>
                 <th>Status</th>
+                <th>Actions</th>
             </tr>
         </thead>
 
@@ -98,6 +114,23 @@
 
                     <td>
                         {{ $employee->status }}
+                    </td>
+                    <td>
+                        <a href="{{ route('employees.show', $employee) }}"> View </a>|
+
+                        <a href="{{ route('employees.edit', $employee) }}"> Edit </a>|
+
+                        <form action="{{ route('employees.destroy', $employee) }}" method="POST" style="display:inline;">
+
+                            @csrf
+                            @method('DELETE')
+
+                            <button type="submit" onclick="return confirm('Are you sure you want to delete this employee?')">
+                                Delete
+                            </button>
+
+                        </form>
+
                     </td>
                 </tr>
 

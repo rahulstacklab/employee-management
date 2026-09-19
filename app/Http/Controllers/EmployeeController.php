@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Employee;
 use App\Models\Department;
 use App\Models\Designation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeController extends Controller
 {
@@ -42,7 +45,55 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+    
+            'email' => 'required|email|unique:users,email',
+    
+            'password' => 'required|string|min:8',
+    
+            'department_id' => 'required|exists:departments,id',
+    
+            'designation_id' => 'required|exists:designations,id',
+    
+            'phone' => 'nullable|string|max:20',
+    
+            'address' => 'nullable|string',
+    
+            'joining_date' => 'required|date',
+    
+            'salary' => 'nullable|numeric|min:0',
+    
+            'status' => 'required|in:active,inactive',
+        ]);
+    
+        DB::transaction(function () use ($validated) {
+    
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role' => 'employee',
+            ]);
+    
+            Employee::create([
+                'user_id' => $user->id,
+                'department_id' => $validated['department_id'],
+                'designation_id' => $validated['designation_id'],
+                'employee_code' => 'EMP' . strtoupper(
+                    substr(uniqid(), -5)
+                ),
+                'phone' => $validated['phone'] ?? null,
+                'address' => $validated['address'] ?? null,
+                'joining_date' => $validated['joining_date'],
+                'salary' => $validated['salary'] ?? null,
+                'status' => $validated['status'],
+            ]);
+        });
+    
+        return redirect()
+            ->route('employees.index')
+            ->with('success', 'Employee created successfully.');
     }
 
     /**
