@@ -1,146 +1,164 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends('layouts.app')
 
-    <title>Employees</title>
+@section('title', 'Employees')
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            margin: 0;
-            padding: 30px;
-        }
+@section('content')
 
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-        }
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        h1 {
-            margin-bottom: 20px;
-        }
+        <h1 class="mb-0">
+            Employees
+        </h1>
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+        <a
+            href="{{ route('employees.create') }}"
+            class="btn btn-primary"
+        >
+            + Add Employee
+        </a>
 
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
+    </div>
 
-        th {
-            background: #f0f0f0;
-        }
-    </style>
-</head>
 
-<body>
+    <div class="card shadow-sm">
 
-<div class="container">
+        <div class="card-body">
 
-    <h1>Employee Management</h1>
-    @if(session('success'))
-        <div style="
-            background: #d4edda;
-            color: #155724;
-            padding: 12px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        ">
-            {{ session('success') }}
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Employee Code</th>
+                            <th>Department</th>
+                            <th>Designation</th>
+                            <th>Salary</th>
+                            <th>Status</th>
+                            <th width="180">Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @forelse($employees as $employee)
+
+                            <tr>
+
+                                <td>
+                                    {{ $employee->id }}
+                                </td>
+
+                                <td>
+                                    {{ $employee->user->name }}
+                                </td>
+
+                                <td>
+                                    {{ $employee->user->email }}
+                                </td>
+
+                                <td>
+                                    {{ $employee->employee_code }}
+                                </td>
+
+                                <td>
+                                    {{ $employee->department->name }}
+                                </td>
+
+                                <td>
+                                    {{ $employee->designation->name }}
+                                </td>
+
+                                <td>
+                                    ₹{{ number_format($employee->salary, 2) }}
+                                </td>
+
+                                <td>
+
+                                    @if($employee->status === 'active')
+
+                                        <span class="badge bg-success">
+                                            Active
+                                        </span>
+
+                                    @else
+
+                                        <span class="badge bg-secondary">
+                                            Inactive
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+                                <td>
+
+                                    <a
+                                        href="{{ route('employees.show', $employee) }}"
+                                        class="btn btn-sm btn-info"
+                                    >
+                                        View
+                                    </a>
+
+                                    <a
+                                        href="{{ route('employees.edit', $employee) }}"
+                                        class="btn btn-sm btn-warning"
+                                    >
+                                        Edit
+                                    </a>
+
+                                    <form
+                                        action="{{ route('employees.destroy', $employee) }}"
+                                        method="POST"
+                                        class="d-inline"
+                                    >
+
+                                        @csrf
+
+                                        @method('DELETE')
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Are you sure you want to delete this employee?')"
+                                        >
+                                            Delete
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="9"
+                                    class="text-center"
+                                >
+                                    No employees found.
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
         </div>
-    @endif
-    
-    <a href="{{ route('employees.create') }}">
-        Add Employee
-    </a>
 
-    <table>
+    </div>
 
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Employee Code</th>
-                <th>Department</th>
-                <th>Designation</th>
-                <th>Salary</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            @foreach($employees as $employee)
-
-                <tr>
-                    <td>{{ $employee->id }}</td>
-
-                    <td>
-                        {{ $employee->user->name }}
-                    </td>
-
-                    <td>
-                        {{ $employee->user->email }}
-                    </td>
-
-                    <td>
-                        {{ $employee->employee_code }}
-                    </td>
-
-                    <td>
-                        {{ $employee->department->name }}
-                    </td>
-
-                    <td>
-                        {{ $employee->designation->name }}
-                    </td>
-
-                    <td>
-                        ₹{{ $employee->salary }}
-                    </td>
-
-                    <td>
-                        {{ $employee->status }}
-                    </td>
-                    <td>
-                        <a href="{{ route('employees.show', $employee) }}"> View </a>|
-
-                        <a href="{{ route('employees.edit', $employee) }}"> Edit </a>|
-
-                        <form action="{{ route('employees.destroy', $employee) }}" method="POST" style="display:inline;">
-
-                            @csrf
-                            @method('DELETE')
-
-                            <button type="submit" onclick="return confirm('Are you sure you want to delete this employee?')">
-                                Delete
-                            </button>
-
-                        </form>
-
-                    </td>
-                </tr>
-
-            @endforeach
-
-        </tbody>
-
-    </table>
-
-</div>
-
-</body>
-</html>
+@endsection
