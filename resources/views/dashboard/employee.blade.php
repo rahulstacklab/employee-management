@@ -15,7 +15,24 @@
         </p>
 
     </div>
+    
+    <div class="my-4">
 
+        <a
+            href="{{ route('leaves.create') }}"
+            class="btn btn-primary"
+        >
+            + Apply Leave
+        </a>
+
+        <a
+            href="{{ route('leaves.index') }}"
+            class="btn btn-outline-secondary"
+        >
+            My Leaves
+        </a>
+
+    </div>
 
     @if($employee)
 
