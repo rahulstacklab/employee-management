@@ -15,15 +15,50 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    // public function index()
+    // {
+    //     $employees = Employee::with([
+    //         'user',
+    //         'department',
+    //         'designation'
+    //     ])->latest()->get();
+
+    //     return view('employees.index', compact('employees'));
+    // }
+
+    public function index(Request $request)
     {
+        $search = $request->search;
+
         $employees = Employee::with([
             'user',
             'department',
             'designation'
-        ])->latest()->get();
+        ])
+        ->when($search, function ($query) use ($search) {
 
-        return view('employees.index', compact('employees'));
+            $query->where(function ($q) use ($search) {
+
+                $q->where('employee_code', 'like', "%{$search}%")
+
+                ->orWhereHas('user', function ($userQuery) use ($search) {
+
+                    $userQuery->where('name', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%");
+
+                });
+
+            });
+
+        })
+        ->latest()
+        ->paginate(10)
+        ->withQueryString();
+
+        return view('employees.index', compact(
+            'employees',
+            'search'
+        ));
     }
 
     /**

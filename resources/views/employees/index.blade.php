@@ -19,6 +19,35 @@
 
     </div>
 
+    <form action="{{ route('employees.index') }}" method="GET" class="row g-2 mb-4">
+
+        <div class="col-md-6">
+
+            <input type="text" name="search" class="form-control" placeholder="Search by name, email or employee code" value="{{ $search }}">
+
+        </div>
+
+        <div class="col-auto">
+
+            <button type="submit" class="btn btn-primary">
+                Search
+            </button>
+
+        </div>
+
+        @if($search)
+
+            <div class="col-auto">
+
+                <a href="{{ route('employees.index') }}" class="btn btn-secondary">
+                    Clear
+                </a>
+
+            </div>
+
+        @endif
+
+    </form>
 
     <div class="card shadow-sm">
 
@@ -154,6 +183,10 @@
                     </tbody>
 
                 </table>
+
+                <div class="mt-4">
+                    {{ $employees->links() }}
+                </div>
 
             </div>
 
