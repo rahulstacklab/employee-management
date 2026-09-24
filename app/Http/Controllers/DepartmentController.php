@@ -37,6 +37,11 @@ class DepartmentController extends Controller
 
     public function show(Department $department)
     {
+        $department->load([
+            'employees.user',
+            'employees.designation',
+        ]);
+
         return view('departments.show', compact('department'));
     }
 
