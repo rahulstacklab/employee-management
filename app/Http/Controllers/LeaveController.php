@@ -46,4 +46,34 @@ class LeaveController extends Controller
             ->route('leaves.index')
             ->with('success', 'Leave application submitted successfully.');
     }
+
+    public function adminIndex()
+    {
+        $leaves = Leave::with([
+            'employee.user',
+            'employee.department',
+            'employee.designation',
+        ])
+        ->latest()
+        ->paginate(10);
+
+        return view('leaves.admin-index', compact('leaves'));
+    }
+
+    public function updateStatus(Request $request, Leave $leave)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:approved,rejected',
+            'admin_remark' => 'nullable|string|max:1000',
+        ]);
+
+        $leave->update([
+            'status' => $validated['status'],
+            'admin_remark' => $validated['admin_remark'] ?? null,
+        ]);
+
+        return redirect()
+            ->route('admin.leaves.index')
+            ->with('success', 'Leave status updated successfully.');
+    }
 }

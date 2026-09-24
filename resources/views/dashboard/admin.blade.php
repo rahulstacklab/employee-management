@@ -14,12 +14,23 @@
             </p>
         </div>
 
-        <a
-            href="{{ route('employees.create') }}"
-            class="btn btn-primary"
-        >
-            + Add Employee
-        </a>
+        <div class="d-flex gap-2">
+
+    <a
+        href="{{ route('admin.leaves.index') }}"
+        class="btn btn-outline-primary"
+    >
+        Leave Requests
+    </a>
+
+    <a
+        href="{{ route('employees.create') }}"
+        class="btn btn-primary"
+    >
+        + Add Employee
+    </a>
+
+</div>
 
     </div>
 
@@ -101,9 +112,14 @@
                         Pending Leaves
                     </h6>
 
-                    <h2 class="mb-0">
-                        {{ $pendingLeaves }}
-                    </h2>
+                    <a
+                        href="{{ route('admin.leaves.index') }}"
+                        class="text-decoration-none text-dark"
+                    >
+                        <h2 class="mb-0">
+                            {{ $pendingLeaves }}
+                        </h2>
+                    </a>
 
                 </div>
 

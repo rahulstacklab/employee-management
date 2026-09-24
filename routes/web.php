@@ -22,6 +22,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::resource('employees', EmployeeController::class);
 
+    Route::get('/admin/leaves', [LeaveController::class, 'adminIndex'])
+        ->name('admin.leaves.index');
+
+    Route::patch('/admin/leaves/{leave}/status', [LeaveController::class, 'updateStatus'])
+        ->name('admin.leaves.update-status');
+
 });
 
 Route::middleware('auth')->group(function () {
