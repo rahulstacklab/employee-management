@@ -9,7 +9,9 @@ class DepartmentController extends Controller
 {
     public function index()
     {
-        $departments = Department::latest()->paginate(10);
+        $departments = Department::withCount('employees')
+            ->latest()
+            ->paginate(10);
 
         return view('departments.index', compact('departments'));
     }
