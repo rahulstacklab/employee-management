@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\DashboardController;
@@ -20,6 +21,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('employees', EmployeeController::class);
 
     Route::resource('departments', DepartmentController::class);
+
+    Route::resource('designations', DesignationController::class);
 
     Route::get('/admin/leaves', [LeaveController::class, 'adminIndex'])
         ->name('admin.leaves.index');
